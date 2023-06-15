@@ -16,48 +16,90 @@ public class TimerGUI : MonoBehaviour
     public float minutesTimer = 0;  // 分を測定する
     public float hourTimer = 0;     // 時を測定する
 
+    public bool isStart = false;    // スタートしているか？のフラグ
+
+    #region おまけ
+    public Button startAndStopButton = null;
+    #endregion
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        #region おまけ
+        startAndStopButton.onClick.AddListener(() => { OnStartAndStopClicked(); });
+        #endregion
     }
 
     // Update is called once per frame
     void Update()
     {
-        secondTimer += Time.deltaTime *1;      // 足し算で時間を増やす
-        secondText.text = secondTimer.ToString("00");
-        conmaText.text = (secondTimer - Mathf.Floor(secondTimer)).ToString(".00");
-
-        // === 60秒たったら1分増やす
-        if (secondTimer >= 60)
+        if (isStart)
         {
-            minutesTimer++;     // 分を +1 する
-            minutesText.text = minutesTimer.ToString("00");
+            secondTimer += Time.deltaTime * 1;      // 足し算で時間を増やす
+            secondText.text = secondTimer.ToString("00");
+            conmaText.text = (secondTimer - Mathf.Floor(secondTimer)).ToString(".00");
 
-            secondTimer = 0;    // 秒をリセット
+            // === 60秒たったら1分増やす
+            if (secondTimer >= 60)
+            {
+                minutesTimer++;     // 分を +1 する
+                minutesText.text = minutesTimer.ToString("00");
+
+                secondTimer = 0;    // 秒をリセット
                 secondText.text = secondTimer.ToString("00");
-        }
+            }
 
-        // === 60分たったら1時間増やす
-        if (minutesTimer >= 60)
-        {
-            hourTimer++;        // 時を +1 する
-            hourText.text = hourTimer.ToString("00");
+            // === 60分たったら1時間増やす
+            if (minutesTimer >= 60)
+            {
+                hourTimer++;        // 時を +1 する
+                hourText.text = hourTimer.ToString("00");
 
-            minutesTimer = 0;   // 分をリセット
-            minutesText.text = minutesTimer.ToString("00");
+                minutesTimer = 0;   // 分をリセット
+                minutesText.text = minutesTimer.ToString("00");
+            }
         }
     }
 
-    // === "ボタン押したときの処理"に登録する関数
+    // === "スタートボタンを押したときの処理"に登録する関数
     public void OnStartClicked()
     {
         Debug.Log("スタートボタンが押されました。");
+
+        // タイマーのフラグを切り替える
+        isStart = true;                 // Trueにして動かす
     }
 
+    // === "ストップボタンを押したときの処理"に登録する関数
     public void OnStopClicked()
     {
         Debug.Log("ストップボタンが押されました。");
+
+        // タイマーのフラグを切り替える
+        isStart = false;                // Falseにして止める
     }
+
+    // === "リセットボタンを押したときの処理"に登録する関数
+    public void OnResetClicked()
+    {
+        Debug.Log("リセットボタンが押されました。");
+
+        // タイマーの内部数値をリセット
+        secondTimer = 0;
+        minutesTimer = 0;
+        hourTimer = 0;
+
+        // タイマーの表示を更新
+        secondText.text = secondTimer.ToString("00");
+        minutesText.text = minutesTimer.ToString("00");
+        hourText.text = hourTimer.ToString("00");
+        conmaText.text = secondTimer.ToString(".00");
+    }
+
+    #region おまけ
+    public void OnStartAndStopClicked()
+    {
+        isStart = !isStart;
+    }
+    #endregion
 }
