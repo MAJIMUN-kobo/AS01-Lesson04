@@ -96,6 +96,12 @@ public class TimerGUI : MonoBehaviour
         conmaText.text = secondTimer.ToString(".00");
     }
 
+    // === 終了ボタンを押したときの処理に登録する関数
+    public void OnExitApplicationClicked()
+    {
+        Application.Quit();     // アプリを終了させる
+    }
+
     #region おまけ
     public void OnStartAndStopClicked()
     {
